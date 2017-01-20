@@ -1,0 +1,226 @@
+//
+//  MacToggle.swift
+//  RichAppz
+//
+//  Copyright © 2016-2017 RichAppz Limited. All rights reserved.
+//  richappz.com - (rich@richappz.com)
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
+
+import Cocoa
+
+class MacToggle: NSView {
+
+    //================================================================================
+    // MARK: Properties
+    //================================================================================
+
+    fileprivate let height: CGFloat
+    fileprivate let width: CGFloat
+
+    fileprivate var isAnimating = false
+    fileprivate var leftConstraint: NSLayoutConstraint?
+    fileprivate var heightConstraint: NSLayoutConstraint?
+    fileprivate var widthConstraint: NSLayoutConstraint?
+
+    fileprivate let backVw: NSView = {
+        let view = NSView()
+        view.wantsLayer = true
+        view.layer?.masksToBounds = false
+        return view
+    }()
+
+    fileprivate let circle: NSView = {
+        let view = NSView()
+
+        let shadow = NSShadow()
+        shadow.shadowColor = NSColor.agblack.withAlphaComponent(0.4)
+        shadow.shadowOffset = CGSize(width: 0, height: -2)
+        shadow.shadowBlurRadius = 2
+
+        view.backgroundColor = .white
+        view.wantsLayer = true
+        view.shadow = shadow
+        view.layer?.borderWidth = 2
+        view.layer?.borderColor = NSColor.white.cgColor
+        return view
+    }()
+
+    fileprivate var _radius: CGFloat?
+    fileprivate var backRadius: CGFloat {
+        get {
+            if let r = _radius { return r }
+            return height/2
+        }
+    }
+
+    fileprivate var circleRadius: CGFloat {
+        get {
+            if let r = _radius { return r-outlineWidth }
+            return (height-(outlineWidth*2))/2
+        }
+    }
+
+    //================================================================================
+    // MARK: Callback
+    //================================================================================
+
+    var callback: ((_ isOn: Bool) -> Void)?
+
+    //================================================================================
+    // MARK: Public Parameters
+    //================================================================================
+
+    public var isOn = false {
+        didSet { animate() }
+    }
+
+    public var hasToggleBorder = true {
+        didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
+    }
+
+    // MARK: Size Settings
+    public var outlineWidth: CGFloat = 2 {
+        didSet {
+            backVw.layer?.borderWidth = outlineWidth
+            layoutSwitch(resetingLayout: true)
+        }
+    }
+
+    public var toggleBorderWidth: CGFloat = 2 {
+        didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
+    }
+
+    public var radius: CGFloat {
+        get {
+            if let r = _radius { return r }
+            return (height-(outlineWidth*2))/2
+        }
+        set {
+            _radius = newValue
+            layoutSwitch()
+        }
+    }
+
+
+    // MARK: Color Settings
+    public var outlineColor: NSColor = .lightGray {
+        didSet { backVw.layer?.borderColor = outlineColor.cgColor }
+    }
+
+    public var fillColor: NSColor = .lightGray {
+        didSet { if isOn { backVw.layer?.borderColor = fillColor.cgColor } }
+    }
+
+    public var toggleColor: NSColor = .white {
+        didSet { circle.backgroundColor = toggleColor }
+    }
+
+    public var backColor: NSColor = .white {
+        didSet { backVw.backgroundColor = backColor }
+    }
+
+    //================================================================================
+    // MARK: Initialization
+    //================================================================================
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    init(height: CGFloat = 44) {
+        self.height = height
+        self.width = height+(height*0.6)
+        super.init(frame: .zero)
+        backVw.backgroundColor = backColor
+
+        addSubview(backVw)
+        backVw.translatesAutoresizingMaskIntoConstraints = false
+        backVw.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        backVw.widthAnchor.constraint(equalToConstant: width).isActive = true
+        backVw.heightAnchor.constraint(equalToConstant: height).isActive = true
+
+        addSubview(circle)
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        leftConstraint = circle.leftAnchor.constraint(equalTo: backVw.leftAnchor, constant: outlineWidth)
+        circle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        widthConstraint = circle.widthAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+        heightConstraint = circle.heightAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+
+        leftConstraint?.isActive = true
+        widthConstraint?.isActive = true
+        heightConstraint?.isActive = true
+
+        translatesAutoresizingMaskIntoConstraints = false
+        rightAnchor.constraint(equalTo: backVw.rightAnchor).isActive = true
+        heightAnchor.constraint(equalToConstant: height).isActive = true
+
+        layoutSwitch()
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        isOn = !isOn
+    }
+
+    //================================================================================
+    // MARK: Helpers
+    //================================================================================
+
+    fileprivate func layoutSwitch(resetingLayout: Bool = false) {
+        if resetingLayout {
+            leftConstraint?.constant = outlineWidth
+
+            widthConstraint?.isActive = false
+            widthConstraint = circle.widthAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+            widthConstraint?.isActive = true
+
+            heightConstraint?.isActive = false
+            heightConstraint = circle.heightAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+            heightConstraint?.isActive = true
+            layoutSubtreeIfNeeded()
+        }
+
+        backVw.layer?.cornerRadius  = backRadius
+        backVw.layer?.borderWidth   = isOn ? (height/2) : outlineWidth
+        backVw.layer?.borderColor   = outlineColor.cgColor
+
+        circle.layer?.cornerRadius  = circleRadius
+    }
+
+    fileprivate func animate() {
+        if isAnimating { return }
+        isAnimating = true
+        NSAnimationContext.runAnimationGroup({ (context) in
+            context.duration = Size.mediumAnimation
+            context.allowsImplicitAnimation = true
+
+            backVw.animator().layer?.borderWidth = isOn ? (height/2) : outlineWidth
+            backVw.animator().layer?.borderColor = isOn ? fillColor.cgColor : outlineColor.cgColor
+
+            let push: Double = Double(outlineWidth + width) - Double(height)
+            leftConstraint?.constant = isOn ? CGFloat(push) : outlineWidth
+            animator().layoutSubtreeIfNeeded()
+        }) {
+            self.isAnimating = false
+            self.callback?(self.isOn)
+        }
+    }
+
+}
