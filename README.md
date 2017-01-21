@@ -46,7 +46,6 @@ If you have any issues with the MacToggle, the shoot me an email <a href="mailto
 
 ## Todo
 
-- Morphing animations to match iOS UISwitch. 
 - Dragging on the toggle.
 - Label support.
 

@@ -35,7 +35,6 @@ class MacToggle: NSView {
     fileprivate let height: CGFloat
     fileprivate let width: CGFloat
 
-    fileprivate var isAnimating = false
     fileprivate var leftConstraint: NSLayoutConstraint?
     fileprivate var heightConstraint: NSLayoutConstraint?
     fileprivate var widthConstraint: NSLayoutConstraint?
@@ -51,7 +50,7 @@ class MacToggle: NSView {
         let view = NSView()
 
         let shadow = NSShadow()
-        shadow.shadowColor = NSColor.agblack.withAlphaComponent(0.4)
+        shadow.shadowColor = NSColor.black.withAlphaComponent(0.4)
         shadow.shadowOffset = CGSize(width: 0, height: -2)
         shadow.shadowBlurRadius = 2
 
@@ -76,6 +75,10 @@ class MacToggle: NSView {
             if let r = _radius { return r-outlineWidth }
             return (height-(outlineWidth*2))/2
         }
+    }
+
+    fileprivate var toggleSize: CGFloat {
+        get { return height-(outlineWidth*2) }
     }
 
     //================================================================================
@@ -176,6 +179,24 @@ class MacToggle: NSView {
     }
 
     override func mouseDown(with event: NSEvent) {
+        let push: Double = Double(outlineWidth + width) - Double(height)
+        NSAnimationContext.runAnimationGroup({ (context) in
+            context.duration = 0.3
+            context.allowsImplicitAnimation = true
+
+            let adjustment = (toggleSize/4)
+            widthConstraint?.isActive = false
+            widthConstraint = circle.widthAnchor.constraint(equalToConstant: toggleSize+adjustment)
+            widthConstraint?.isActive = true
+
+            if isOn {
+                leftConstraint?.constant = CGFloat(push)-adjustment
+            }
+            animator().layoutSubtreeIfNeeded()
+        })
+    }
+
+    override func mouseUp(with event: NSEvent) {
         isOn = !isOn
     }
 
@@ -205,22 +226,26 @@ class MacToggle: NSView {
     }
 
     fileprivate func animate() {
-        if isAnimating { return }
-        isAnimating = true
+        acceptsTouchEvents = false
+        let push: Double = Double(outlineWidth + width) - Double(height)
+
         NSAnimationContext.runAnimationGroup({ (context) in
-            context.duration = Size.mediumAnimation
+            context.duration = 0.3
             context.allowsImplicitAnimation = true
 
             backVw.animator().layer?.borderWidth = isOn ? (height/2) : outlineWidth
             backVw.animator().layer?.borderColor = isOn ? fillColor.cgColor : outlineColor.cgColor
 
-            let push: Double = Double(outlineWidth + width) - Double(height)
+            widthConstraint?.isActive = false
+            widthConstraint = circle.widthAnchor.constraint(equalToConstant: toggleSize)
+            widthConstraint?.isActive = true
+            
             leftConstraint?.constant = isOn ? CGFloat(push) : outlineWidth
             animator().layoutSubtreeIfNeeded()
         }) {
-            self.isAnimating = false
+            self.acceptsTouchEvents = true
             self.callback?(self.isOn)
         }
     }
-
+    
 }
