@@ -95,11 +95,12 @@ class MacToggle: NSView {
         didSet { animate() }
     }
 
+    /// Change the toggle border on and off
     public var hasToggleBorder = true {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
-    // MARK: Size Settings
+    /// Change the width of the outline border
     public var outlineWidth: CGFloat = 2 {
         didSet {
             backVw.layer?.borderWidth = outlineWidth
@@ -107,10 +108,12 @@ class MacToggle: NSView {
         }
     }
 
+    /// Change the width of the border on the toggle
     public var toggleBorderWidth: CGFloat = 2 {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
+    /// Change the radius of the complete toggle
     public var radius: CGFloat {
         get {
             if let r = _radius { return r }
@@ -123,19 +126,22 @@ class MacToggle: NSView {
     }
 
 
-    // MARK: Color Settings
+    /// Change the color of the outline border
     public var outlineColor: NSColor = .lightGray {
         didSet { backVw.layer?.borderColor = outlineColor.cgColor }
     }
 
+    /// Change the color of the fill when the toggle is on
     public var fillColor: NSColor = .lightGray {
         didSet { if isOn { backVw.layer?.borderColor = fillColor.cgColor } }
     }
 
+    /// Change the color of the toggle center
     public var toggleColor: NSColor = .white {
         didSet { circle.backgroundColor = toggleColor }
     }
 
+    /// Change the background color of the complete toggle (visible when switch is off)
     public var backColor: NSColor = .white {
         didSet { backVw.backgroundColor = backColor }
     }
