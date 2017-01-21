@@ -8,6 +8,8 @@
 
 Create Mac OS toggles with the user interaction, desisn and animation of the iOS UISwitch. Completely configurable through quick understandable code. With access to the source, you are able to add more custom features if you want. If their are any tweaks that you feel should be enabled then send me over a PR and I will have a look. **Swift 3 Ready**
 
+<center>![Banner](Resources/mactoggle.gif)</center>
+
 ##Setup
 
 Nothing complicated, download the MacToggle.swift file and add it to your project.
@@ -24,7 +26,7 @@ let toggle: MacToggle = {
 	return view
 }()
 ```
-There a plenty of settings you can play with, have fun and create the designs that you require for your Mac OS developments. Here are a couple of designs, for some ideas:
+There are plenty of settings you can play with, have fun and create the designs that you require for your Mac OS developments. Here are a couple of designs, for ideas:
 
 <br>
 
