@@ -6,13 +6,13 @@
 
 #MacToggle
 
-Create Mac OS toggles with the user interaction, desisn and animation of the iOS UISwitch. Completely configurable through quick understandable code. With access to the source, you are able to add more custom features if you want. If their are any tweaks that you feel should be enabled then send me over a PR and I will have a look. **Swift 3 Ready**
+Create Mac OS toggles with the user interaction, design and animation of the iOS UISwitch. Completely configurable through quick understandable code. With access to the source, you are able to add more custom features if you want. If their are any tweaks that you feel should be enabled then send me over a PR and I will have a look. **Swift 3 Ready**
 
 <center>![Banner](Resources/mactoggle.gif)</center>
 
 ##Setup
 
-Nothing complicated, download the MacToggle.swift file and add it to your project.
+Nothing complicated, copy the MacToggle folder over to your project.
 
 <br>
 
