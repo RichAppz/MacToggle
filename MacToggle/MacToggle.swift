@@ -26,6 +26,7 @@
 
 import Cocoa
 
+@IBDesignable
 class MacToggle: NSView {
 
     //================================================================================
@@ -33,7 +34,9 @@ class MacToggle: NSView {
     //================================================================================
 
     fileprivate let height: CGFloat
-    fileprivate let width: CGFloat
+    fileprivate var width: CGFloat {
+        get { return height+(height*0.6) }
+    }
 
     fileprivate var leftConstraint: NSLayoutConstraint?
     fileprivate var heightConstraint: NSLayoutConstraint?
@@ -91,17 +94,17 @@ class MacToggle: NSView {
     // MARK: Public Parameters
     //================================================================================
 
-    public var isOn = false {
+    @IBInspectable public var isOn = false {
         didSet { animate() }
     }
 
     /// Change the toggle border on and off
-    public var hasToggleBorder = true {
+    @IBInspectable public var hasToggleBorder = true {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
     /// Change the width of the outline border
-    public var outlineWidth: CGFloat = 2 {
+    @IBInspectable public var outlineWidth: CGFloat = 2 {
         didSet {
             backVw.layer?.borderWidth = outlineWidth
             layoutSwitch(resetingLayout: true)
@@ -109,12 +112,12 @@ class MacToggle: NSView {
     }
 
     /// Change the width of the border on the toggle
-    public var toggleBorderWidth: CGFloat = 2 {
+    @IBInspectable public var toggleBorderWidth: CGFloat = 2 {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
     /// Change the radius of the complete toggle
-    public var radius: CGFloat {
+    @IBInspectable public var radius: CGFloat {
         get {
             if let r = _radius { return r }
             return (height-(outlineWidth*2))/2
@@ -127,22 +130,22 @@ class MacToggle: NSView {
 
 
     /// Change the color of the outline border
-    public var outlineColor: NSColor = .lightGray {
+    @IBInspectable public var outlineColor: NSColor = .lightGray {
         didSet { backVw.layer?.borderColor = outlineColor.cgColor }
     }
 
     /// Change the color of the fill when the toggle is on
-    public var fillColor: NSColor = .lightGray {
+    @IBInspectable public var fillColor: NSColor = .lightGray {
         didSet { if isOn { backVw.layer?.borderColor = fillColor.cgColor } }
     }
 
     /// Change the color of the toggle center
-    public var toggleColor: NSColor = .white {
+    @IBInspectable public var toggleColor: NSColor = .white {
         didSet { circle.backgroundColor = toggleColor }
     }
 
     /// Change the background color of the complete toggle (visible when switch is off)
-    public var backColor: NSColor = .white {
+    @IBInspectable public var backColor: NSColor = .white {
         didSet { backVw.backgroundColor = backColor }
     }
 
@@ -151,37 +154,15 @@ class MacToggle: NSView {
     //================================================================================
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self.height = 44
+        super.init(coder: coder)
+        drawView()
     }
 
-    init(height: CGFloat = 44) {
+    required init(height: CGFloat = 44) {
         self.height = height
-        self.width = height+(height*0.6)
         super.init(frame: .zero)
-        backVw.backgroundColor = backColor
-
-        addSubview(backVw)
-        backVw.translatesAutoresizingMaskIntoConstraints = false
-        backVw.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-        backVw.widthAnchor.constraint(equalToConstant: width).isActive = true
-        backVw.heightAnchor.constraint(equalToConstant: height).isActive = true
-
-        addSubview(circle)
-        circle.translatesAutoresizingMaskIntoConstraints = false
-        leftConstraint = circle.leftAnchor.constraint(equalTo: backVw.leftAnchor, constant: outlineWidth)
-        circle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        widthConstraint = circle.widthAnchor.constraint(equalToConstant: height-(outlineWidth*2))
-        heightConstraint = circle.heightAnchor.constraint(equalToConstant: height-(outlineWidth*2))
-
-        leftConstraint?.isActive = true
-        widthConstraint?.isActive = true
-        heightConstraint?.isActive = true
-
-        translatesAutoresizingMaskIntoConstraints = false
-        rightAnchor.constraint(equalTo: backVw.rightAnchor).isActive = true
-        heightAnchor.constraint(equalToConstant: height).isActive = true
-
-        layoutSwitch()
+        drawView()
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -209,6 +190,33 @@ class MacToggle: NSView {
     //================================================================================
     // MARK: Helpers
     //================================================================================
+
+    fileprivate func drawView() {
+        backVw.backgroundColor = backColor
+
+        addSubview(backVw)
+        backVw.translatesAutoresizingMaskIntoConstraints = false
+        backVw.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        backVw.widthAnchor.constraint(equalToConstant: width).isActive = true
+        backVw.heightAnchor.constraint(equalToConstant: height).isActive = true
+
+        addSubview(circle)
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        leftConstraint = circle.leftAnchor.constraint(equalTo: backVw.leftAnchor, constant: outlineWidth)
+        circle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        widthConstraint = circle.widthAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+        heightConstraint = circle.heightAnchor.constraint(equalToConstant: height-(outlineWidth*2))
+
+        leftConstraint?.isActive = true
+        widthConstraint?.isActive = true
+        heightConstraint?.isActive = true
+
+        translatesAutoresizingMaskIntoConstraints = false
+        rightAnchor.constraint(equalTo: backVw.rightAnchor).isActive = true
+        heightAnchor.constraint(equalToConstant: height).isActive = true
+
+        layoutSwitch()
+    }
 
     fileprivate func layoutSwitch(resetingLayout: Bool = false) {
         if resetingLayout {
