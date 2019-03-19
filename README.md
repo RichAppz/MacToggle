@@ -1,24 +1,19 @@
-<br>
+![Banner](Resources/logo.png)
 
-<center>![Banner](Resources/logo.png)</center>
-
-<br>
-
-#MacToggle
+# MacToggle
 
 Create Mac OS toggles with the user interaction, design and animation of the iOS UISwitch. Completely configurable through quick understandable code. With access to the source, you are able to add more custom features if you want. If their are any tweaks that you feel should be enabled then send me over a PR and I will have a look. **Swift 3 Ready**
 
-<center>![Banner](Resources/mactoggle.gif)</center>
+![Banner](Resources/mactoggle.gif)
 
-##Setup
+## Setup
 
 Nothing complicated, copy the MacToggle folder over to your project.
 
-<br>
 
-##Sample Code
+## Sample Code
 
-```
+```swift
 let toggle: MacToggle = {
 	let view = MacToggle()
 	view.isOn = true
@@ -28,19 +23,14 @@ let toggle: MacToggle = {
 ```
 There are plenty of settings you can play with, have fun and create the designs that you require for your Mac OS developments. Here are a couple of designs, for ideas:
 
-<br>
 
-<center>![Banner](Resources/switch-1.png)</center>
 
-<br>
+![Banner](Resources/switch-1.png)
 
-<center>![Banner](Resources/switch-2.png)</center>
+![Banner](Resources/switch-2.png)
 
-<br>
+![Banner](Resources/switch-3.png)
 
-<center>![Banner](Resources/switch-3.png)</center>
-
-<br>
 
 ## Support
 
@@ -51,7 +41,6 @@ If you have any issues with the MacToggle, the shoot me an email <a href="mailto
 - Dragging on the toggle.
 - Label support.
 
-<br>
 
 # License
 
