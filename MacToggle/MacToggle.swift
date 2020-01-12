@@ -94,12 +94,12 @@ class MacToggle: NSView {
     // MARK: Public Parameters
     //================================================================================
 
-    @IBInspectable public var isOn = false {
+    @IBInspectable public var isOn: Bool = false {
         didSet { animate() }
     }
 
     /// Change the toggle border on and off
-    @IBInspectable public var hasToggleBorder = true {
+    @IBInspectable public var hasToggleBorder: Bool = true {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
