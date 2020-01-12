@@ -33,7 +33,12 @@ class MacToggle: NSView {
     // MARK: Properties
     //================================================================================
 
-    fileprivate var height: CGFloat = 44
+    fileprivate var requiredHeight: CGFloat?
+
+    fileprivate var height: CGFloat {
+        get { return requiredHeight ?? bounds.height}
+    }
+
     fileprivate var width: CGFloat {
         get { return height+(height*0.6) }
     }
@@ -159,7 +164,7 @@ class MacToggle: NSView {
     }
 
     required init(height: CGFloat = 44) {
-        self.height = height
+        self.requiredHeight = height
         super.init(frame: .zero)
         drawView()
     }
