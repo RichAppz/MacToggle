@@ -33,7 +33,12 @@ class MacToggle: NSView {
     // MARK: Properties
     //================================================================================
 
-    fileprivate var height: CGFloat = 44
+    fileprivate var requiredHeight: CGFloat?
+
+    fileprivate var height: CGFloat {
+        get { return requiredHeight ?? bounds.height}
+    }
+
     fileprivate var width: CGFloat {
         get { return height+(height*0.6) }
     }
@@ -94,12 +99,12 @@ class MacToggle: NSView {
     // MARK: Public Parameters
     //================================================================================
 
-    @IBInspectable public var isOn = false {
+    @IBInspectable public var isOn: Bool = false {
         didSet { animate() }
     }
 
     /// Change the toggle border on and off
-    @IBInspectable public var hasToggleBorder = true {
+    @IBInspectable public var hasToggleBorder: Bool = true {
         didSet { circle.layer?.borderWidth = hasToggleBorder ? toggleBorderWidth : 0 }
     }
 
@@ -159,7 +164,7 @@ class MacToggle: NSView {
     }
 
     required init(height: CGFloat = 44) {
-        self.height = height
+        self.requiredHeight = height
         super.init(frame: .zero)
         drawView()
     }
